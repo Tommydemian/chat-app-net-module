@@ -1,4 +1,5 @@
 const net = require('net');
+const { generateRandomNumber } = require('./utils')
 
 const PORT = process.env.PORT || 8080; 
 const hostname = '127.0.0.1';
@@ -12,14 +13,24 @@ const clients = [];
 // client[0] => socket
 
 server.on('connection', (socket) => { // particular/ individual socket being crated with every client.
-    clients.push(socket)
     console.log('A new connection has been established');
+    
+    const clientId = String(generateRandomNumber())
+    socket.write(`id-${clientId}`)
+
+    clients.push({id: clientId, socket })
 
     socket.on('data', (data) => {
+        dataString = data.toString('utf-8')
+        const id = dataString.substring(0, dataString.indexOf('-')) 
+        const message = dataString.substring(dataString.indexOf('-message-') + 9)
+
+
         clients.forEach(client => {
-            client.write(data);
+            client.socket.write(`User ${id}: ${message}`); // write to each client socket.
         })
-    })
+    });
+    
 })
 
 

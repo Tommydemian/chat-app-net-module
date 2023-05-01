@@ -10,3 +10,6 @@
 
 ``` clave comprender estos 2 methods ya que son keys centrales para la creacion de servers/ clients e interactuar.
 ```
+## Improving the UI of the chatRoom interface which is in the console.
+
+## Identifying the client:
