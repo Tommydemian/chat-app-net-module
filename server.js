@@ -14,11 +14,15 @@ const clients = [];
 
 server.on('connection', (socket) => { // particular/ individual socket being crated with every client.
     console.log('A new connection has been established');
-    
     const clientId = String(generateRandomNumber())
-    socket.write(`id-${clientId}`)
+    // inform everybody that x user has joined teh chatroom
+    clients.forEach((client) => {
+        client.socket.write(`User ${clientId} has joined!`)
+    })
 
+    socket.write(`id-${clientId}`)
     clients.push({id: clientId, socket })
+
 
     socket.on('data', (data) => {
         dataString = data.toString('utf-8')
@@ -30,6 +34,13 @@ server.on('connection', (socket) => { // particular/ individual socket being cra
             client.socket.write(`User ${id}: ${message}`); // write to each client socket.
         })
     });
+
+    // let everyone know x user left the chatroom
+    socket.on('end', () => {
+    clients.forEach((client) => {
+        client.socket.write(`User ${clientId} has left the chatroom`);
+    })    
+    })
     
 })
 
